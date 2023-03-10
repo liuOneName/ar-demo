@@ -14,8 +14,9 @@
     <script type="module">
       import * as THREE from "three"
       import { MindARThree } from "mindar-image-three"
+      const container = document.querySelector("#container")
       const mindarThree = new MindARThree({
-        container: document.querySelector("#container"),
+        container,
         imageTargetSrc:
           "https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/examples/image-tracking/assets/card-example/card.mind",
       })
@@ -39,9 +40,39 @@
       startButton.addEventListener("click", () => {
         start()
       })
+      const stopButton = document.querySelector("#stopButton")
       stopButton.addEventListener("click", () => {
         mindarThree.stop()
         mindarThree.renderer.setAnimationLoop(null)
+      })
+
+      const createBox = (radius, color) => {
+        const geometry = new THREE.IcosahedronBufferGeometry(radius, 3)
+        const object = new THREE.Mesh(
+          geometry,
+          new THREE.MeshBasicMaterial({
+            color: 0x808080,
+            transparent: true,
+            side: THREE.DoubleSide,
+          })
+        )
+        object.material.color.r = color[0] / 255
+        object.material.color.g = color[1] / 255
+        object.material.color.b = color[2] / 255
+        object.material.opacity = 1
+        object.shapeType = "ball"
+        object.name = "ball"
+        object.position.copy(plane.position)
+        object.rotation.copy(plane.rotation)
+        return object
+      }
+
+      let flag = false
+      container.addEventListener("click", () => {
+        if (!flag) {
+          scene.add(createBox(0.07, [255, 255, 255]))
+          flag = true
+        }
       })
     </script>
     <style>
