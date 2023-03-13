@@ -6,6 +6,14 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <style>
+      .action-type {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: none;
+      }
+    </style>
 
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -187,6 +195,7 @@
           console.log("gesture-handler init")
           this.handleScale = this.handleScale.bind(this)
           this.handleRotation = this.handleRotation.bind(this)
+          this.handlePosition = this.handlePosition.bind(this)
 
           this.isVisible = true
           this.initialScale = this.el.object3D.scale.clone()
@@ -199,24 +208,48 @@
           // this.el.sceneEl.addEventListener("markerLost", (e) => {
           //   this.isVisible = false
           // })
+          this.fingerType = 1
+          const rotate = document.createElement("div")
+          rotate.innerText = "rotate"
+          rotate.style.color = "blue"
+          rotate.addEventListener("click", () => {
+            this.remove()
+            this.fingerType = 1
+            this.update()
+            rotate.style.color = "blue"
+            move.style.color = "#000"
+          })
+          const move = document.createElement("div")
+          move.innerText = "move"
+          move.addEventListener("click", () => {
+            this.remove()
+            this.fingerType = 2
+            this.update()
+            rotate.style.color = "#000"
+            move.style.color = "blue"
+          })
+          const wrapper = document.querySelector(".action-type")
+          wrapper.appendChild(rotate)
+          wrapper.appendChild(move)
         },
 
         update: function () {
+          this.fingerHandle = this.fingerType === 1 ? this.handleRotation : this.handlePosition
           if (this.data.enabled) {
-            this.el.sceneEl.addEventListener("onefingermove", this.handleRotation)
+            this.el.sceneEl.addEventListener("onefingermove", this.fingerHandle)
             this.el.sceneEl.addEventListener("twofingermove", this.handleScale)
-            this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
+            // this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
           } else {
-            this.el.sceneEl.removeEventListener("onefingermove", this.handleRotation)
+            this.el.sceneEl.removeEventListener("onefingermove", this.fingerHandle)
             this.el.sceneEl.removeEventListener("twofingermove", this.handleScale)
-            this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
+            // this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
           }
         },
 
         remove: function () {
-          this.el.sceneEl.removeEventListener("onefingermove", this.handleRotation)
+          this.el.sceneEl.removeEventListener("onefingermove", this.fingerHandle)
           this.el.sceneEl.removeEventListener("twofingermove", this.handleScale)
-          this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
+          // this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
         },
 
         handleRotation: function (event) {
@@ -269,34 +302,34 @@
         </a-asset-item>
       </a-assets>
 
-      <!-- <a-marker
-        preset="hiro"
-        raycaster="objects: .clickable"
-        emitevents="true"
-        cursor="fuse: false; rayOrigin: mouse;"
-        id="markerA"
-      >
-        <a-entity
-          id="bowser-model"
-          gltf-model="#bowser"
-          position="0 0 -0.2"
-          scale="0.05 0.05 0.05"
-          class="clickable"
-          gesture-handler
-        >
-        </a-entity>
-      </a-marker> -->
       <a-entity
         id="bowser-model"
         gltf-model="#bowser"
         position="0 0 -0.2"
         scale="0.001 0.001 0.001"
         rotation="1.5 0 0"
+        visible="false"
         class="clickable"
         gesture-handler
       >
       </a-entity>
       <a-entity camera></a-entity>
     </a-scene>
+    <div class="action-type"></div>
+    <script>
+      document.body.addEventListener("click", (e) => {
+        const entity = document.querySelector("#bowser-model")
+        if (!entity.getAttribute("visible")) {
+          entity.setAttribute(
+            "position",
+            `${((e.x / window.innerWidth) * 2 - 1) / 15} ${
+              (1 - (e.y / window.innerHeight) * 2) / 20
+            } -0.2`
+          )
+          entity.setAttribute("visible", true)
+          document.querySelector(".action-type").style.display = "block"
+        }
+      })
+    </script>
   </body>
 </html>
