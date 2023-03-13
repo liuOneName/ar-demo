@@ -5,7 +5,7 @@
     <title>Gesture Interactions - A-Frame & AR.js</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel="stylesheet" href="styles.css" />
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
 
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -19,6 +19,7 @@
         },
 
         init: function () {
+          console.log("gesture-detector init")
           this.targetElement = this.data.element && document.querySelector(this.data.element)
 
           if (!this.targetElement) {
@@ -183,41 +184,53 @@
         },
 
         init: function () {
+          console.log("gesture-handler init")
           this.handleScale = this.handleScale.bind(this)
           this.handleRotation = this.handleRotation.bind(this)
 
-          this.isVisible = false
+          this.isVisible = true
           this.initialScale = this.el.object3D.scale.clone()
           this.scaleFactor = 1
 
-          this.el.sceneEl.addEventListener("markerFound", (e) => {
-            this.isVisible = true
-          })
+          // this.el.sceneEl.addEventListener("markerFound", (e) => {
+          //   this.isVisible = true
+          // })
 
-          this.el.sceneEl.addEventListener("markerLost", (e) => {
-            this.isVisible = false
-          })
+          // this.el.sceneEl.addEventListener("markerLost", (e) => {
+          //   this.isVisible = false
+          // })
         },
 
         update: function () {
           if (this.data.enabled) {
             this.el.sceneEl.addEventListener("onefingermove", this.handleRotation)
             this.el.sceneEl.addEventListener("twofingermove", this.handleScale)
+            this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
           } else {
             this.el.sceneEl.removeEventListener("onefingermove", this.handleRotation)
             this.el.sceneEl.removeEventListener("twofingermove", this.handleScale)
+            this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
           }
         },
 
         remove: function () {
           this.el.sceneEl.removeEventListener("onefingermove", this.handleRotation)
           this.el.sceneEl.removeEventListener("twofingermove", this.handleScale)
+          this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
         },
 
         handleRotation: function (event) {
           if (this.isVisible) {
             this.el.object3D.rotation.y += event.detail.positionChange.x * this.data.rotationFactor
             this.el.object3D.rotation.x += event.detail.positionChange.y * this.data.rotationFactor
+            // this.el.object3D.position.y -= event.detail.positionChange.y / 10
+            // this.el.object3D.position.x += event.detail.positionChange.x / 10
+          }
+        },
+        handlePosition: function (event) {
+          if (this.isVisible) {
+            this.el.object3D.position.y -= event.detail.positionChange.y / 10
+            this.el.object3D.position.x += event.detail.positionChange.x / 10
           }
         },
 
@@ -256,7 +269,7 @@
         </a-asset-item>
       </a-assets>
 
-      <a-marker
+      <!-- <a-marker
         preset="hiro"
         raycaster="objects: .clickable"
         emitevents="true"
@@ -266,18 +279,19 @@
         <a-entity
           id="bowser-model"
           gltf-model="#bowser"
-          position="0 0 0"
+          position="0 0 -0.2"
           scale="0.05 0.05 0.05"
           class="clickable"
           gesture-handler
         >
         </a-entity>
-      </a-marker>
+      </a-marker> -->
       <a-entity
         id="bowser-model"
         gltf-model="#bowser"
-        position="0 0 0"
-        scale="0.05 0.05 0.05"
+        position="0 0 -0.2"
+        scale="0.001 0.001 0.001"
+        rotation="1.5 0 0"
         class="clickable"
         gesture-handler
       >
