@@ -71,8 +71,8 @@
       container.addEventListener("click", () => {
         console.log("scene", mindarThree.scene)
         if (!flag) {
-          // mindarThree.scene.add(createBox(1, [255, 255, 255]))
-          anchor.group.add(createBox(1, [255, 255, 255]))
+          mindarThree.scene.add(createBox(1, [255, 255, 255]))
+          // anchor.group.add(createBox(1, [255, 255, 255]))
           flag = true
         }
       })
