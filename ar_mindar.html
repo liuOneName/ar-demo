@@ -76,6 +76,13 @@
           flag = true
         }
       })
+      // 光源
+      const light1 = new THREE.HemisphereLight(0xffffff, 0x444444) // 半球光
+      light1.position.set(0, 0.2, 0)
+      scene.add(light1)
+      const light2 = new THREE.DirectionalLight(0xffffff) // 平行光
+      light2.position.set(0, 500, 1000)
+      scene.add(light2)
     </script>
     <style>
       body {
