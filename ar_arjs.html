@@ -301,9 +301,25 @@
         >
         </a-asset-item>
       </a-assets>
-
+      <a-marker
+        preset="hiro"
+        raycaster="objects: .clickable"
+        emitevents="true"
+        cursor="fuse: false; rayOrigin: mouse;"
+        id="markerA"
+      >
+        <a-entity
+          id="bowser-model"
+          gltf-model="#bowser"
+          position="0 0 0"
+          scale="0.05 0.05 0.05"
+          class="clickable"
+          gesture-handler
+        >
+        </a-entity>
+      </a-marker>
       <a-entity
-        id="bowser-model"
+        id="bowser-model1"
         gltf-model="#bowser"
         position="0 0 -0.2"
         scale="0.001 0.001 0.001"
@@ -317,19 +333,19 @@
     </a-scene>
     <div class="action-type"></div>
     <script>
-      document.body.addEventListener("click", (e) => {
-        const entity = document.querySelector("#bowser-model")
-        if (!entity.getAttribute("visible")) {
-          entity.setAttribute(
-            "position",
-            `${((e.x / window.innerWidth) * 2 - 1) / 15} ${
-              (1 - (e.y / window.innerHeight) * 2) / 20
-            } -0.2`
-          )
-          entity.setAttribute("visible", true)
-          document.querySelector(".action-type").style.display = "block"
-        }
-      })
+      // document.body.addEventListener("click", (e) => {
+      //   const entity = document.querySelector("#bowser-model1")
+      //   if (!entity.getAttribute("visible")) {
+      //     entity.setAttribute(
+      //       "position",
+      //       `${((e.x / window.innerWidth) * 2 - 1) / 15} ${
+      //         (1 - (e.y / window.innerHeight) * 2) / 20
+      //       } -0.2`
+      //     )
+      //     entity.setAttribute("visible", true)
+      //     document.querySelector(".action-type").style.display = "block"
+      //   }
+      // })
     </script>
   </body>
 </html>
