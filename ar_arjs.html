@@ -236,34 +236,29 @@
           if (this.data.enabled) {
             this.el.sceneEl.addEventListener("onefingermove", this.fingerHandle)
             this.el.sceneEl.addEventListener("twofingermove", this.handleScale)
-            // this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
           } else {
             this.el.sceneEl.removeEventListener("onefingermove", this.fingerHandle)
             this.el.sceneEl.removeEventListener("twofingermove", this.handleScale)
-            // this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
           }
         },
 
         remove: function () {
           this.el.sceneEl.removeEventListener("onefingermove", this.fingerHandle)
           this.el.sceneEl.removeEventListener("twofingermove", this.handleScale)
-          // this.el.sceneEl.addEventListener("threefingermove", this.handlePosition)
         },
 
         handleRotation: function (event) {
-          this.handleRotation(event)
+          // this.handleRotation(event)
           if (this.isVisible) {
             this.el.object3D.rotation.y += event.detail.positionChange.x * this.data.rotationFactor
             this.el.object3D.rotation.x += event.detail.positionChange.y * this.data.rotationFactor
-            // this.el.object3D.position.y -= event.detail.positionChange.y / 10
-            // this.el.object3D.position.x += event.detail.positionChange.x / 10
           }
         },
         handlePosition: function (event) {
           this.handleRotation(event)
           if (this.isVisible) {
-            this.el.object3D.position.y -= event.detail.positionChange.y / 10
-            this.el.object3D.position.x += event.detail.positionChange.x / 10
+            this.el.object3D.position.y -= event.detail.positionChange.y
+            this.el.object3D.position.x += event.detail.positionChange.x
           }
         },
 
@@ -280,6 +275,22 @@
             this.el.object3D.scale.y = this.scaleFactor * this.initialScale.y
             this.el.object3D.scale.z = this.scaleFactor * this.initialScale.z
           }
+        },
+      })
+
+      // const camera = document.querySelector("[camera]")
+      // const marker = document.querySelector("#markerA")
+      AFRAME.registerComponent("markerhandler", {
+        init: function () {
+          this.el.sceneEl.addEventListener("markerFound", (e) => {
+            console.log(e.target.object3D.position)
+            const pos = e.target.object3D.position
+            const entity = document.querySelector("#bowser-model1")
+            if (!entity.getAttribute("visible")) {
+              entity.setAttribute("position", `${pos.x} ${pos.y} ${pos.z}`)
+              entity.setAttribute("visible", true)
+            }
+          })
         },
       })
     </script>
@@ -308,8 +319,9 @@
         emitevents="true"
         cursor="fuse: false; rayOrigin: mouse;"
         id="markerA"
+        markerhandler
       >
-        <a-entity
+        <!-- <a-entity
           id="bowser-model"
           gltf-model="#bowser"
           position="0 0 0"
@@ -317,19 +329,19 @@
           class="clickable"
           gesture-handler
         >
-        </a-entity>
+        </a-entity> -->
       </a-marker>
-      <!-- <a-entity
+      <a-entity
         id="bowser-model1"
         gltf-model="#bowser"
         position="0 0 -0.2"
-        scale="0.001 0.001 0.001"
+        scale="0.1 0.1 0.1"
         rotation="1.5 0 0"
         visible="false"
         class="clickable"
         gesture-handler
       >
-      </a-entity> -->
+      </a-entity>
       <a-entity camera></a-entity>
     </a-scene>
     <div class="action-type"></div>
