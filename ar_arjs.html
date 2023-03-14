@@ -27,7 +27,6 @@
         },
 
         init: function () {
-          console.log("gesture-detector init")
           this.targetElement = this.data.element && document.querySelector(this.data.element)
 
           if (!this.targetElement) {
@@ -192,7 +191,6 @@
         },
 
         init: function () {
-          console.log("gesture-handler init")
           this.handleScale = this.handleScale.bind(this)
           this.handleRotation = this.handleRotation.bind(this)
           this.handlePosition = this.handlePosition.bind(this)
@@ -234,7 +232,7 @@
         },
 
         update: function () {
-          this.fingerHandle = this.fingerType === 1 ? this.handleRotation : this.handlePosition
+          this.fingerHandle = this.fingerType !== 1 ? this.handleRotation : this.handlePosition
           if (this.data.enabled) {
             this.el.sceneEl.addEventListener("onefingermove", this.fingerHandle)
             this.el.sceneEl.addEventListener("twofingermove", this.handleScale)
@@ -253,6 +251,7 @@
         },
 
         handleRotation: function (event) {
+          this.handleRotation(event)
           if (this.isVisible) {
             this.el.object3D.rotation.y += event.detail.positionChange.x * this.data.rotationFactor
             this.el.object3D.rotation.x += event.detail.positionChange.y * this.data.rotationFactor
@@ -261,6 +260,7 @@
           }
         },
         handlePosition: function (event) {
+          this.handleRotation(event)
           if (this.isVisible) {
             this.el.object3D.position.y -= event.detail.positionChange.y / 10
             this.el.object3D.position.x += event.detail.positionChange.x / 10
@@ -295,9 +295,10 @@
       id="scene"
     >
       <a-assets>
+        <!-- https://cdn.glitch.com/06bd98b4-97ee-4c07-a546-fe39ca205034%2Fbowser.glb -->
         <a-asset-item
           id="bowser"
-          src="https://cdn.glitch.com/06bd98b4-97ee-4c07-a546-fe39ca205034%2Fbowser.glb"
+          src="https://lba-static-mix.oss-cn-shanghai.aliyuncs.com/wayzone_saas/media/assets/rc-upload-1678349292314-3scene.glb"
         >
         </a-asset-item>
       </a-assets>
@@ -318,7 +319,7 @@
         >
         </a-entity>
       </a-marker>
-      <a-entity
+      <!-- <a-entity
         id="bowser-model1"
         gltf-model="#bowser"
         position="0 0 -0.2"
@@ -328,7 +329,7 @@
         class="clickable"
         gesture-handler
       >
-      </a-entity>
+      </a-entity> -->
       <a-entity camera></a-entity>
     </a-scene>
     <div class="action-type"></div>
